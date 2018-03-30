@@ -4,12 +4,49 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/tv_title"
+    <ImageView
+        android:id="@+id/iv_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:src="@drawable/timg"/>
+
+    <Button
+        android:id="@+id/tv_toast"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="70dp"
+        android:visibility="invisible"
         android:textSize="25sp"
-        android:text="Hello World!"/>
+        android:text="toast"/>
+
+    <Button
+        android:id="@+id/btn_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_toast"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="hide image"/>
+
+    <Button
+        android:id="@+id/btn_new"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btn_icon"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="show a new view"/>
+
+    <Button
+        android:id="@+id/btn_new_two"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btn_new"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="show a newer view"/>
 
 </RelativeLayout>
