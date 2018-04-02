@@ -29,7 +29,7 @@
         android:layout_below="@+id/tv_toast"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:text="hide image"/>
+        android:text="replace image"/>
 
     <Button
         android:id="@+id/btn_new"

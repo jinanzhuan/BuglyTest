@@ -3,6 +3,7 @@ package com.ljn.buglytest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -14,6 +15,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button btn_icon;
     private Button btn_new;
     private Button btn_new_two;
+    private int num = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +40,37 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Toast.makeText(MainActivity.this, "我是土司", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.btn_icon :
-                iv_icon.setVisibility(View.GONE);
+
+                switch (num) {
+                    case 0 :
+                        iv_icon.setImageResource(R.drawable.mv1);
+                        num++;
+                        break;
+                    case 1 :
+                        iv_icon.setImageResource(R.drawable.mv2);
+                        num++;
+                        break;
+                    case 2 :
+                        iv_icon.setImageResource(R.drawable.mv3);
+                        num++;
+                        break;
+                    case 3 :
+                        iv_icon.setImageResource(R.drawable.mv4);
+                        num++;
+                        break;
+                    case 4 :
+                        iv_icon.setImageResource(R.drawable.mv5);
+                        num++;
+                        break;
+                    case 5 :
+                        iv_icon.setImageResource(R.drawable.mv6);
+                        num++;
+                        break;
+                    case 6 :
+                        iv_icon.setImageResource(R.drawable.timg);
+                        num=0;
+                        break;
+                }
                 break;
             case R.id.btn_new :
                 startActivity(new Intent(MainActivity.this, NewActivity.class));
@@ -47,5 +79,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(new Intent(MainActivity.this, NewerActivity.class));
                 break;
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            if (keyCode == KeyEvent.KEYCODE_BACK) { //表示按返回键 时的操作
+                android.os.Process.killProcess(android.os.Process.myPid());
+            }
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

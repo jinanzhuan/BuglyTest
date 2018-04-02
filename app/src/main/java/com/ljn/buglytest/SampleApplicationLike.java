@@ -17,6 +17,7 @@ import com.tencent.tinker.loader.app.DefaultApplicationLike;
  */
 
 public class SampleApplicationLike extends DefaultApplicationLike {
+
     public SampleApplicationLike(Application application, int tinkerFlags, boolean tinkerLoadVerifyFlag, long applicationStartElapsedTime, long applicationStartMillisTime, Intent tinkerResultIntent) {
         super(application, tinkerFlags, tinkerLoadVerifyFlag, applicationStartElapsedTime, applicationStartMillisTime, tinkerResultIntent);
     }
@@ -31,7 +32,7 @@ public class SampleApplicationLike extends DefaultApplicationLike {
         // 设置是否自动合成补丁，默认为true
         Beta.canAutoPatch = true;
         // 设置是否提示用户重启，默认为false
-        Beta.canNotifyUserRestart = true;
+        Beta.canNotifyUserRestart = false;
         // 补丁回调接口
         Beta.betaPatchListener = new BetaPatchListener() {
             @Override
