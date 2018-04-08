@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         num++;
                         break;
                     case 4 :
-                        iv_icon.setImageResource(R.drawable.mv5);
+                        iv_icon.setImageResource(R.drawable.mv4);
                         num++;
                         break;
                     case 5 :
