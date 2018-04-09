@@ -13,13 +13,16 @@ import com.tencent.bugly.beta.Beta;
 import com.tencent.bugly.beta.interfaces.BetaPatchListener;
 import com.tencent.bugly.beta.upgrade.UpgradeStateListener;
 
-import java.util.Locale;
+import static com.tencent.bugly.beta.tinker.TinkerManager.getApplication;
 
 /**
  * Created by shuwei on 2018/4/8.
  */
 
 public class MyApplication extends Application {
+    private String bugly;
+    public static final String NAME = "name";
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -29,7 +32,7 @@ public class MyApplication extends Application {
         // 设置是否自动下载补丁
         Beta.canAutoDownloadPatch = true;
         // 设置是否提示用户重启
-        Beta.canNotifyUserRestart = true;
+        Beta.canNotifyUserRestart = false;
         // 设置是否自动合成补丁
         Beta.canAutoPatch = true;
 
@@ -49,12 +52,12 @@ public class MyApplication extends Application {
 
             @Override
             public void onUpgradeNoVersion(boolean b) {
-                Toast.makeText(getApplicationContext(), "最新版本", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(), "最新版本", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onUpgrading(boolean b) {
-                Toast.makeText(getApplicationContext(), "onUpgrading", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(), "onUpgrading", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -69,26 +72,26 @@ public class MyApplication extends Application {
         Beta.betaPatchListener = new BetaPatchListener() {
             @Override
             public void onPatchReceived(String patchFileUrl) {
-                Toast.makeText(getApplicationContext(), patchFileUrl, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(), patchFileUrl, Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onDownloadReceived(long savedLength, long totalLength) {
-                Toast.makeText(getApplicationContext(), String.format(Locale.getDefault(),
-                        "%s %d%%",
-                        Beta.strNotificationDownloading,
-                        (int) (totalLength == 0 ? 0 : savedLength * 100 / totalLength)), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(), String.format(Locale.getDefault(),
+//                        "%s %d%%",
+//                        Beta.strNotificationDownloading,
+//                        (int) (totalLength == 0 ? 0 : savedLength * 100 / totalLength)), Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onDownloadSuccess(String patchFilePath) {
-                Toast.makeText(getApplicationContext(), patchFilePath, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(), patchFilePath, Toast.LENGTH_SHORT).show();
 //                Beta.applyDownloadedPatch();
             }
 
             @Override
             public void onDownloadFailure(String msg) {
-                Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -98,18 +101,20 @@ public class MyApplication extends Application {
 
             @Override
             public void onApplyFailure(String msg) {
-                Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onPatchRollback() {
-                Toast.makeText(getApplicationContext(), "onPatchRollback", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(), "onPatchRollback", Toast.LENGTH_SHORT).show();
             }
         };
 
         long start = System.currentTimeMillis();
+        // 设置开发设备，默认为false，上传补丁如果下发范围指定为“开发设备”，需要调用此接口来标识开发设备
+        Bugly.setIsDevelopmentDevice(getApplication(), true);
         // 这里实现SDK初始化，appId替换成你的在Bugly平台申请的appId,调试时将第三个参数设置为true
-        Bugly.init(this, "900029763", true);
+        Bugly.init(this, BuildConfig.BUGLY_ID, false);
         long end = System.currentTimeMillis();
         Log.e("init time--->", end - start + "ms");
     }
@@ -127,5 +132,13 @@ public class MyApplication extends Application {
     protected void setStrictMode() {
         StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().permitAll().build());
         StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectAll().penaltyLog().build());
+    }
+
+    public String getBugly() {
+        return bugly;
+    }
+
+    public void setBugly(String bugly) {
+        this.bugly = bugly;
     }
 }

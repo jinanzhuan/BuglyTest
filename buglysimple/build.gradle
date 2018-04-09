@@ -3,12 +3,12 @@ apply plugin: 'com.android.application'
 apply from: 'tinker-support.gradle'
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion "26.0.1"
+    compileSdkVersion 25
+    buildToolsVersion "25.0.3"
     defaultConfig {
         applicationId "com.ljn.buglysimple"
         minSdkVersion 16
-        targetSdkVersion 26
+        targetSdkVersion 25
         versionCode 100
         versionName "1.0.0"
         ndk {
@@ -17,6 +17,8 @@ android {
         }
         // 开启multidex
         multiDexEnabled true
+
+        buildConfigField("String", "BUGLY_ID", '"b104603c01"')
     }
     // 签名配置
     signingConfigs {
@@ -24,7 +26,7 @@ android {
             try {
                 keyAlias 'china'
                 keyPassword 'test123456'
-                storeFile file('F:/code_test/BuglyTest/buglysimple/keystore/buglysimple.jks')
+                storeFile file('./keystore/buglysimple.jks')
                 storePassword 'test123456'
             } catch (ex) {
                 throw new InvalidUserDataException(ex.toString())
@@ -61,7 +63,7 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:26.+'
+    compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
     // 远程依赖集成方式（推荐）
