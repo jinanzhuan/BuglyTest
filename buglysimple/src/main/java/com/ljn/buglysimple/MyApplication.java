@@ -8,6 +8,7 @@ import android.support.multidex.MultiDex;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.iflytek.cloud.SpeechUtility;
 import com.tencent.bugly.Bugly;
 import com.tencent.bugly.beta.Beta;
 import com.tencent.bugly.beta.interfaces.BetaPatchListener;
@@ -26,6 +27,23 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        initBugly();
+        initXF();
+    }
+
+    /**
+     * 初始化讯飞语音
+     */
+    private void initXF() {
+        // 参数间使用半角“,”分隔。
+        // 设置你申请的应用appid,请勿在'='与appid之间添加空格及空转义符
+        // 注意： appid 必须和下载的SDK保持一致，否则会出现10407错误
+        SpeechUtility.createUtility(this, "appid=" + BuildConfig.XF_APPID);
+        // 以下语句用于设置日志开关（默认开启），设置成false时关闭语音云SDK日志打印
+        // Setting.setShowLog(false);
+    }
+
+    private void initBugly() {
         setStrictMode();
         // 设置是否开启热更新能力，默认为true
         Beta.enableHotfix = true;

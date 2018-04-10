@@ -2,14 +2,22 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:cv="http://schemas.android.com/tools"
               android:background="#ffffff"
               android:orientation="vertical">
 
-    <TextView
+    <EditText
         android:id="@+id/tv_voice_content"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:visibility="invisible"
+        android:cursorVisible="true"
+        android:textCursorDrawable="@null"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:background="@null"
+        android:gravity="start"
         android:padding="10dp"/>
 
 
@@ -17,7 +25,6 @@
         android:id="@+id/tv_hint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
         android:layout_gravity="center_horizontal"
         android:textSize="16sp"
         android:text="按住说话"/>
@@ -47,13 +54,33 @@
             android:id="@+id/rl_voice"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_height="wrap_content">
+            android:layout_height="80dp">
+
+            <com.makeramen.roundedimageview.RoundedImageView
+                android:id="@+id/view_wave"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                app:riv_corner_radius="35dp"
+                android:src="@drawable/voice_bg"
+                android:visibility="invisible"
+                android:layout_centerInParent="true"/>
+
+            <com.ljn.buglysimple.CompeletedView
+                android:id="@+id/cv_progress"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                cv:strokeWidth="10dp"
+                cv:radius="60dp"
+                cv:ringColor="#ff00ff"
+                android:layout_centerInParent="true"/>
 
             <ImageView
+                android:id="@+id/iv_voice"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_centerInParent="true"
                 android:src="@drawable/wxvoice"/>
+
 
         </RelativeLayout>
 
