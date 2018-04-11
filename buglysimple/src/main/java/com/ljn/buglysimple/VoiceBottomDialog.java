@@ -25,7 +25,6 @@ import com.iflytek.cloud.RecognizerListener;
 import com.iflytek.cloud.RecognizerResult;
 import com.iflytek.cloud.SpeechError;
 import com.iflytek.cloud.SpeechRecognizer;
-import com.ljn.buglysimple.xfei.RecognizerResultDialogListener;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.HashMap;

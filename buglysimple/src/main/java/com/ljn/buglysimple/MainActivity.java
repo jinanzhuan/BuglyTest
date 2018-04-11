@@ -8,8 +8,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.ljn.buglysimple.xfei.XFSpeechManager;
-
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private ImageView iv_icon;
     private TextView tv_text;
@@ -50,10 +48,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()) {
             case R.id.btn_button :
 //                String bug = null;
-                new XFSpeechManager(this, tv_text);
+                new com.ljn.buglysimple.xfei.XFSpeechManager(this, tv_text);
                 break;
             case R.id.btn_button2:
-                new VoiceSpeechManager(this, 100, tv_text);
+                new XFSpeechManager(this, 100, tv_text);
                 break;
             case R.id.btn_progress:
                 ProgressActivity.actionStart(this);

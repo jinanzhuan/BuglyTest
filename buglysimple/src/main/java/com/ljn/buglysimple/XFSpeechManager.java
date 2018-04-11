@@ -14,7 +14,6 @@ import com.iflytek.cloud.SpeechConstant;
 import com.iflytek.cloud.SpeechError;
 import com.iflytek.cloud.SpeechRecognizer;
 import com.ljn.buglysimple.xfei.JsonParser;
-import com.ljn.buglysimple.xfei.RecognizerResultDialogListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,7 +31,7 @@ import java.util.LinkedHashMap;
  * </pre>
  */
 
-public class VoiceSpeechManager {
+public class XFSpeechManager {
     private Activity mContext;
     // 用HashMap存储听写结果
     private HashMap<String, String> mIatResults;
@@ -45,7 +44,7 @@ public class VoiceSpeechManager {
     private String mEngineType = SpeechConstant.TYPE_CLOUD;
     private String mPreContent;
 
-    public VoiceSpeechManager(Activity context, TextView resultText) {
+    public XFSpeechManager(Activity context, TextView resultText) {
         mContext = context;
         mResultText = resultText;
         if(requirePermission(20)) {
@@ -53,7 +52,7 @@ public class VoiceSpeechManager {
         }
     }
 
-    public VoiceSpeechManager(Activity context, int requestCode, TextView resultText) {
+    public XFSpeechManager(Activity context, int requestCode, TextView resultText) {
         mContext = context;
         mResultText = resultText;
         if(requirePermission(requestCode)) {

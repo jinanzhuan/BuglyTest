@@ -1,4 +1,4 @@
-package com.ljn.buglysimple.xfei;
+package com.ljn.buglysimple;
 
 import com.iflytek.cloud.ui.RecognizerDialogListener;
 
