@@ -8,6 +8,7 @@ import android.support.multidex.MultiDex;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.iflytek.cloud.Setting;
 import com.iflytek.cloud.SpeechUtility;
 import com.tencent.bugly.Bugly;
 import com.tencent.bugly.beta.Beta;
@@ -20,7 +21,7 @@ import static com.tencent.bugly.beta.tinker.TinkerManager.getApplication;
  * Created by shuwei on 2018/4/8.
  */
 
-public class MyApplication extends Application {
+public class MyApplication extends Application implements Thread.UncaughtExceptionHandler {
     private String bugly;
     public static final String NAME = "name";
 
@@ -29,6 +30,11 @@ public class MyApplication extends Application {
         super.onCreate();
         initBugly();
         initXF();
+        initException();
+    }
+
+    private void initException() {
+        Thread.setDefaultUncaughtExceptionHandler(this);
     }
 
     /**
@@ -40,7 +46,7 @@ public class MyApplication extends Application {
         // 注意： appid 必须和下载的SDK保持一致，否则会出现10407错误
         SpeechUtility.createUtility(this, "appid=" + BuildConfig.XF_APPID);
         // 以下语句用于设置日志开关（默认开启），设置成false时关闭语音云SDK日志打印
-        // Setting.setShowLog(false);
+         Setting.setShowLog(true);
     }
 
     private void initBugly() {
@@ -158,5 +164,11 @@ public class MyApplication extends Application {
 
     public void setBugly(String bugly) {
         this.bugly = bugly;
+    }
+
+    @Override
+    public void uncaughtException(Thread t, Throwable e) {
+        Log.e("TAG", e.getMessage());
+        Toast.makeText(getApplication(), e.getMessage(), Toast.LENGTH_SHORT).show();
     }
 }

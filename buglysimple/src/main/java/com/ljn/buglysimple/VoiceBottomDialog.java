@@ -42,18 +42,25 @@ public class VoiceBottomDialog extends Dialog {
     private Context mContext;
     private VoiceBottomDialog mDialog;
     private RelativeLayout rl_voice;
-    private EditText tv_voice_content;
+    private EditText et_voice_content;
+    private TextView tv_voice_empty;
     private TextView tv_voice_cancel;
     private TextView tv_voice_finish;
     private TextView tv_hint;
+    private CompletedView cv_progress;
     private RoundedImageView view_wave;
-    private CompeletedView cv_progress;
+    private TextView mResultText;
     private SpeechRecognizer mSpeechRecognizer;//g
     private RecognizerResultDialogListener mDialogListener;//h
     private long startTime;
     private long endTime;
     private volatile int k;
     private String preContent = "";
+    private boolean isScroll = true;
+    private boolean isHaveResult = false;
+    private int mCurrentProgress = 0;
+    private boolean isNetOut;//网络问题
+    private int selectionPosition;//光标位置
 
     public VoiceBottomDialog(@NonNull Context context, InitListener initListener) {
         this(context, 0, initListener);
@@ -69,16 +76,49 @@ public class VoiceBottomDialog extends Dialog {
 
     private void init() {
         final View view = LayoutInflater.from(mContext).inflate(R.layout.voiceinput, null);
-        tv_voice_content = (EditText) view.findViewById(R.id.tv_voice_content);
+        et_voice_content = (EditText) view.findViewById(R.id.tv_voice_content);
         rl_voice = (RelativeLayout) view.findViewById(R.id.rl_voice);
+        tv_voice_empty = (TextView) view.findViewById(R.id.tv_voice_empty);
         tv_voice_cancel = (TextView) view.findViewById(R.id.tv_voice_cancel);
         tv_voice_finish = (TextView) view.findViewById(R.id.tv_voice_finish);
         tv_hint = (TextView) view.findViewById(R.id.tv_hint);
         view_wave = (RoundedImageView) view.findViewById(R.id.view_wave);
-        cv_progress = (CompeletedView) view.findViewById(R.id.cv_progress);
-        cv_progress.setProgress(50);
+        cv_progress = (CompletedView) view.findViewById(R.id.cv_progress);
         setMatchWidth(view);
         setListener();
+    }
+
+    private void startProgress() {
+        Log.e("VoiceBottomDialog", "开始progress");
+        isScroll = true;
+        mCurrentProgress = 0;
+        cv_progress.setVisibility(View.VISIBLE);
+        new Thread(new ProgressRunable()).start();
+    }
+
+    private void stopProgress() {
+        Log.e("VoiceBottomDialog", "结束progress");
+        isScroll = false;
+        mCurrentProgress = 0;
+        cv_progress.setVisibility(View.GONE);
+    }
+
+    class ProgressRunable implements Runnable {
+        @Override
+        public void run() {
+            while (isScroll && isHaveResult && !isNetOut) {
+                mCurrentProgress += 1;
+                cv_progress.setProgress(mCurrentProgress);
+                try {
+                    Thread.sleep(20);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                if(mCurrentProgress >= 100) {
+                    mCurrentProgress = 0;
+                }
+            }
+        }
     }
 
     private void setListener() {
@@ -88,6 +128,10 @@ public class VoiceBottomDialog extends Dialog {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN :
                         startTime = SystemClock.currentThreadTimeMillis();
+                        if(mSpeechRecognizer == null) {
+                            Toast.makeText(mContext, "初始化失败", Toast.LENGTH_SHORT).show();
+                            break;
+                        }
                         mSpeechRecognizer.setParameter("msc.skin", "default");
                         int var3 = mSpeechRecognizer.startListening(recognizerListener);
                         if(var3 != 0) {
@@ -95,26 +139,42 @@ public class VoiceBottomDialog extends Dialog {
                         }else {
                             k = 1;
                         }
-                        tv_voice_content.setVisibility(View.VISIBLE);
+                        et_voice_content.setVisibility(View.VISIBLE);
                         tv_hint.setVisibility(View.INVISIBLE);
+                        tv_voice_cancel.setVisibility(View.INVISIBLE);
+                        tv_voice_empty.setVisibility(View.INVISIBLE);
+                        tv_voice_finish.setVisibility(View.INVISIBLE);
                         view_wave.setVisibility(View.VISIBLE);
+                        isNetOut = false;
+                        selectionPosition = et_voice_content.getSelectionStart();
+                        stopProgress();
                         break;
                     case MotionEvent.ACTION_CANCEL:
                     case MotionEvent.ACTION_UP:
-                        String result = tv_voice_content.getText().toString().trim();
+                        String result = et_voice_content.getText().toString().trim();
+                        tv_hint.setVisibility(View.VISIBLE);
                         if(TextUtils.isEmpty(result)) {
-                            tv_voice_content.setVisibility(View.INVISIBLE);
-                            tv_hint.setVisibility(View.VISIBLE);
-                        }else {
+                            et_voice_content.setVisibility(View.INVISIBLE);
                             tv_voice_cancel.setVisibility(View.VISIBLE);
+                        }else {
+                            tv_voice_empty.setVisibility(View.VISIBLE);
                             tv_voice_finish.setVisibility(View.VISIBLE);
+                            tv_voice_cancel.setVisibility(View.INVISIBLE);
                         }
                         view_wave.setVisibility(View.INVISIBLE);
                         endTime = SystemClock.currentThreadTimeMillis();
-                        if(endTime - startTime < 500 && tv_voice_content.getVisibility() != View.VISIBLE) {
+                        if(mSpeechRecognizer == null) {
+                            break;
+                        }
+                        isHaveResult = true;
+                        if(endTime - startTime < 100 ) {
                             Toast.makeText(mContext, "说话时间太短", Toast.LENGTH_SHORT).show();
+                            isHaveResult = false;
                         }
                         mSpeechRecognizer.stopListening();
+                        if(!isNetOut && isHaveResult) {
+                            startProgress();
+                        }
                         break;
                 }
                 return false;
@@ -124,29 +184,53 @@ public class VoiceBottomDialog extends Dialog {
         rl_voice.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                tv_voice_cancel.setVisibility(View.VISIBLE);
-                tv_voice_finish.setVisibility(View.VISIBLE);
                 tv_hint.setVisibility(View.INVISIBLE);
                 return false;
+            }
+        });
+
+        tv_voice_empty.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                et_voice_content.setText("");
+                et_voice_content.setVisibility(View.INVISIBLE);
+                tv_voice_empty.setVisibility(View.INVISIBLE);
+                tv_voice_finish.setVisibility(View.INVISIBLE);
+                preContent = "";
+                tv_hint.setVisibility(View.VISIBLE);
+                tv_voice_cancel.setVisibility(View.VISIBLE);
+                stopProgress();
             }
         });
 
         tv_voice_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tv_voice_content.setText("");
-                tv_voice_content.setVisibility(View.INVISIBLE);
-                tv_voice_cancel.setVisibility(View.INVISIBLE);
-                tv_voice_finish.setVisibility(View.INVISIBLE);
-                tv_hint.setVisibility(View.VISIBLE);
-                preContent = "";
+                stopProgress();
+                mDialog.dismiss();
             }
         });
 
         tv_voice_finish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                stopProgress();
+                String trim = et_voice_content.getText().toString().trim();
+                if(!TextUtils.isEmpty(trim)) {
+                    String preTrim = mResultText.getText().toString().trim();
+                    String content = preTrim + trim;
+                    mResultText.setText(content);
+                }
                 mDialog.dismiss();
+            }
+        });
+        
+        et_voice_content.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus) {
+                    
+                }
             }
         });
     }
@@ -166,20 +250,49 @@ public class VoiceBottomDialog extends Dialog {
         mDialogListener = var1;
     }
 
+    /**
+     * 设置语音输入的内容（返回的结果）
+     * @param content
+     * @param isLast
+     */
     public void setVoiceContent(String content, boolean isLast){
         if(!TextUtils.isEmpty(content)) {
-            content = preContent + content;
-            tv_voice_content.setText(content);
-            if(tv_voice_content.getVisibility() != View.VISIBLE) {
-                tv_voice_content.setVisibility(View.VISIBLE);
-                tv_voice_cancel.setVisibility(View.VISIBLE);
+            Log.e("VoiceBottomDialog", "光标位置index="+selectionPosition);
+            String startContent = "";
+            String endContent = "";
+            int selectionLength = 0;
+            if(selectionPosition <= preContent.length()) {
+                startContent = preContent.substring(0, selectionPosition);
+                endContent = preContent.substring(selectionPosition);
+                Log.e("VoiceBottomDialog start", startContent);
+                Log.e("VoiceBottomDialog end=", endContent);
+                selectionLength = (startContent + content).length();
+                content = startContent + content + endContent;
+            }else {
+                content = preContent + content;
+                selectionLength = content.length();
+            }
+            et_voice_content.setText(content);
+            et_voice_content.setSelection(selectionLength);
+            if(et_voice_content.getVisibility() != View.VISIBLE) {
+                et_voice_content.setVisibility(View.VISIBLE);
+                tv_voice_empty.setVisibility(View.VISIBLE);
                 tv_voice_finish.setVisibility(View.VISIBLE);
-                tv_hint.setVisibility(View.INVISIBLE);
+                tv_voice_cancel.setVisibility(View.INVISIBLE);
             }
+
             if(isLast) {
-                preContent = tv_voice_content.getText().toString().trim();
+                preContent = et_voice_content.getText().toString().trim();
+                stopProgress();
             }
+        }else {
+            stopProgress();
         }
+    }
+
+
+    public void setInputTextView(TextView resultText) {
+        mResultText = resultText;
     }
 
     private RecognizerListener recognizerListener = new RecognizerListener() {
@@ -210,6 +323,9 @@ public class VoiceBottomDialog extends Dialog {
             if(null != mDialogListener) {
                 mDialogListener.onResult(var1, var2);
             }
+            if(var2) {
+                isHaveResult = false;
+            }
 
         }
 
@@ -218,7 +334,12 @@ public class VoiceBottomDialog extends Dialog {
             if(null != mDialogListener) {
                 mDialogListener.onError(var1);
             }
-
+            Log.e("VoiceBottomDialog", var1.getPlainDescription(true));
+            if(var1.getErrorCode() >= 20001 && var1.getErrorCode() < 20004) {
+                isNetOut = true;
+                Toast.makeText(mContext, "网络异常", Toast.LENGTH_SHORT).show();
+            }
+            stopProgress();
         }
 
         public void onEvent(int var1, int var2, int var3, Bundle var4) {
@@ -240,4 +361,5 @@ public class VoiceBottomDialog extends Dialog {
         final float scale=context.getResources().getDisplayMetrics().density;
         return (int)(dipValue*scale+0.5f);
     }
+
 }

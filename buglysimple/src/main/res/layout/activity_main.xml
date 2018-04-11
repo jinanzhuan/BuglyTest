@@ -41,4 +41,12 @@
         android:layout_centerHorizontal="true"
         android:text="测试application全局属性"/>
 
+    <Button
+        android:id="@+id/btn_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btn_button2"
+        android:layout_centerHorizontal="true"
+        android:text="测试进度条"/>
+
 </RelativeLayout>

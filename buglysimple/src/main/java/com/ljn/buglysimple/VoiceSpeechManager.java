@@ -76,6 +76,7 @@ public class VoiceSpeechManager {
         setParam();
         // 显示听写对话框
         mIatDialog.setResultListener(mRecognizerDialogListener);
+        mIatDialog.setInputTextView(mResultText);
         mIatDialog.show();
 //        mContext.showToastMessage(mContext.getString(R.string.text_begin));
     }
@@ -131,9 +132,6 @@ public class VoiceSpeechManager {
         }
 
         public void onResult(RecognizerResult results, boolean isLast) {
-            if(isLast) {
-                Log.e("VoiceBottomDialog", "这是最后一个了");
-            }
             printResult(results, isLast);
         }
 

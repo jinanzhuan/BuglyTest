@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tc="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+    
+    <com.ljn.buglysimple.CompletedView
+        android:id="@+id/cv_progress"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        android:layout_centerInParent="true"
+        tc:radius="60dip"
+        tc:ringBgColor="#f4f4f4"
+        tc:ringColor="#9eeb70"
+        tc:circleColor="#f4f4f4"
+        tc:strokeWidth="3dp"/>
+
+</RelativeLayout>

@@ -3,7 +3,7 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               xmlns:app="http://schemas.android.com/apk/res-auto"
-              xmlns:cv="http://schemas.android.com/tools"
+              xmlns:tc="http://schemas.android.com/apk/res-auto"
               android:background="#ffffff"
               android:orientation="vertical">
 
@@ -14,8 +14,6 @@
         android:visibility="invisible"
         android:cursorVisible="true"
         android:textCursorDrawable="@null"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
         android:background="@null"
         android:gravity="start"
         android:padding="10dp"/>
@@ -40,15 +38,29 @@
         android:weightSum="3"
         android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/tv_voice_cancel"
+        <RelativeLayout
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:textSize="16sp"
-            android:visibility="invisible"
-            android:text="清空"/>
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/tv_voice_empty"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textSize="16sp"
+                android:visibility="invisible"
+                android:text="清空"/>
+
+            <TextView
+                android:id="@+id/tv_voice_cancel"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textSize="16sp"
+                android:text="取消"/>
+        </RelativeLayout>
+
+
 
         <RelativeLayout
             android:id="@+id/rl_voice"
@@ -65,14 +77,17 @@
                 android:visibility="invisible"
                 android:layout_centerInParent="true"/>
 
-            <com.ljn.buglysimple.CompeletedView
+            <com.ljn.buglysimple.CompletedView
                 android:id="@+id/cv_progress"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
-                cv:strokeWidth="10dp"
-                cv:radius="60dp"
-                cv:ringColor="#ff00ff"
-                android:layout_centerInParent="true"/>
+                android:layout_centerInParent="true"
+                android:visibility="gone"
+                tc:radius="30dip"
+                tc:ringBgColor="@color/white"
+                tc:ringColor="#9eeb70"
+                tc:circleColor="@color/white"
+                tc:strokeWidth="3dp"/>
 
             <ImageView
                 android:id="@+id/iv_voice"

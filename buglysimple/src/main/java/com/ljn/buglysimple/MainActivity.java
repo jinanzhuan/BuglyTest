@@ -15,6 +15,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView tv_text;
     private Button btn_button;
     private Button btn_button2;
+    private Button btn_progress;
     private ScaleAnimation animation;
 
     @Override
@@ -31,11 +32,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tv_text = (TextView)findViewById(R.id.tv_text);
         btn_button = (Button)findViewById(R.id.btn_button);
         btn_button2 = (Button)findViewById(R.id.btn_button2);
+        btn_progress = (Button)findViewById(R.id.btn_progress);
     }
 
     private void initListener() {
         btn_button.setOnClickListener(this);
         btn_button2.setOnClickListener(this);
+        btn_progress.setOnClickListener(this);
     }
 
     private void initData() {
@@ -51,6 +54,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.btn_button2:
                 new VoiceSpeechManager(this, 100, tv_text);
+                break;
+            case R.id.btn_progress:
+                ProgressActivity.actionStart(this);
                 break;
         }
     }
