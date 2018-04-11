@@ -15,6 +15,7 @@
         android:cursorVisible="true"
         android:textCursorDrawable="@null"
         android:background="@null"
+        android:maxLength="1000"
         android:gravity="start"
         android:padding="10dp"/>
 

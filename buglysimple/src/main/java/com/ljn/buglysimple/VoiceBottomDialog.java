@@ -28,6 +28,8 @@ import com.iflytek.cloud.SpeechRecognizer;
 import com.ljn.buglysimple.xfei.RecognizerResultDialogListener;
 import com.makeramen.roundedimageview.RoundedImageView;
 
+import java.util.HashMap;
+
 /**
  * <pre>
  *     author : created by ljn
@@ -60,7 +62,9 @@ public class VoiceBottomDialog extends Dialog {
     private boolean isHaveResult = false;
     private int mCurrentProgress = 0;
     private boolean isNetOut;//网络问题
+    private boolean isEndofSpeech;
     private int selectionPosition;//光标位置
+    private HashMap<String, String> mapResult;//用来存储临时语音文字结果的
 
     public VoiceBottomDialog(@NonNull Context context, InitListener initListener) {
         this(context, 0, initListener);
@@ -103,10 +107,14 @@ public class VoiceBottomDialog extends Dialog {
         cv_progress.setVisibility(View.GONE);
     }
 
+    public void setHashMap(HashMap<String, String> iatResults) {
+        mapResult = iatResults;
+    }
+
     class ProgressRunable implements Runnable {
         @Override
         public void run() {
-            while (isScroll && isHaveResult && !isNetOut) {
+            while (isScroll && isHaveResult && !isNetOut && !isEndofSpeech) {
                 mCurrentProgress += 1;
                 cv_progress.setProgress(mCurrentProgress);
                 try {
@@ -146,35 +154,13 @@ public class VoiceBottomDialog extends Dialog {
                         tv_voice_finish.setVisibility(View.INVISIBLE);
                         view_wave.setVisibility(View.VISIBLE);
                         isNetOut = false;
+                        isEndofSpeech = false;
                         selectionPosition = et_voice_content.getSelectionStart();
                         stopProgress();
                         break;
                     case MotionEvent.ACTION_CANCEL:
                     case MotionEvent.ACTION_UP:
-                        String result = et_voice_content.getText().toString().trim();
-                        tv_hint.setVisibility(View.VISIBLE);
-                        if(TextUtils.isEmpty(result)) {
-                            et_voice_content.setVisibility(View.INVISIBLE);
-                            tv_voice_cancel.setVisibility(View.VISIBLE);
-                        }else {
-                            tv_voice_empty.setVisibility(View.VISIBLE);
-                            tv_voice_finish.setVisibility(View.VISIBLE);
-                            tv_voice_cancel.setVisibility(View.INVISIBLE);
-                        }
-                        view_wave.setVisibility(View.INVISIBLE);
-                        endTime = SystemClock.currentThreadTimeMillis();
-                        if(mSpeechRecognizer == null) {
-                            break;
-                        }
-                        isHaveResult = true;
-                        if(endTime - startTime < 100 ) {
-                            Toast.makeText(mContext, "说话时间太短", Toast.LENGTH_SHORT).show();
-                            isHaveResult = false;
-                        }
-                        mSpeechRecognizer.stopListening();
-                        if(!isNetOut && isHaveResult) {
-                            startProgress();
-                        }
+                        stopSpeeching();
                         break;
                 }
                 return false;
@@ -199,6 +185,7 @@ public class VoiceBottomDialog extends Dialog {
                 preContent = "";
                 tv_hint.setVisibility(View.VISIBLE);
                 tv_voice_cancel.setVisibility(View.VISIBLE);
+                mapResult.clear();
                 stopProgress();
             }
         });
@@ -221,6 +208,7 @@ public class VoiceBottomDialog extends Dialog {
                     String content = preTrim + trim;
                     mResultText.setText(content);
                 }
+                mapResult.clear();
                 mDialog.dismiss();
             }
         });
@@ -233,6 +221,33 @@ public class VoiceBottomDialog extends Dialog {
                 }
             }
         });
+    }
+
+    private void stopSpeeching() {
+        String result = et_voice_content.getText().toString().trim();
+        tv_hint.setVisibility(View.VISIBLE);
+        if(TextUtils.isEmpty(result)) {
+            et_voice_content.setVisibility(View.INVISIBLE);
+            tv_voice_cancel.setVisibility(View.VISIBLE);
+        }else {
+            tv_voice_empty.setVisibility(View.VISIBLE);
+            tv_voice_finish.setVisibility(View.VISIBLE);
+            tv_voice_cancel.setVisibility(View.INVISIBLE);
+        }
+        view_wave.setVisibility(View.INVISIBLE);
+        endTime = SystemClock.currentThreadTimeMillis();
+        if(mSpeechRecognizer == null) {
+            return;
+        }
+        isHaveResult = true;
+        if(endTime - startTime < 100 ) {
+            Toast.makeText(mContext, "说话时间太短", Toast.LENGTH_SHORT).show();
+            isHaveResult = false;
+        }
+        mSpeechRecognizer.stopListening();
+        if(!isNetOut && isHaveResult && !isEndofSpeech) {
+            startProgress();
+        }
     }
 
     private void setMatchWidth(View view) {
@@ -257,15 +272,12 @@ public class VoiceBottomDialog extends Dialog {
      */
     public void setVoiceContent(String content, boolean isLast){
         if(!TextUtils.isEmpty(content)) {
-            Log.e("VoiceBottomDialog", "光标位置index="+selectionPosition);
             String startContent = "";
             String endContent = "";
             int selectionLength = 0;
             if(selectionPosition <= preContent.length()) {
                 startContent = preContent.substring(0, selectionPosition);
                 endContent = preContent.substring(selectionPosition);
-                Log.e("VoiceBottomDialog start", startContent);
-                Log.e("VoiceBottomDialog end=", endContent);
                 selectionLength = (startContent + content).length();
                 content = startContent + content + endContent;
             }else {
@@ -316,6 +328,9 @@ public class VoiceBottomDialog extends Dialog {
             //监听说完话后的网络请求
             Log.e("VoiceBottomDialog", "说完了");
             Toast.makeText(mContext, "已经结束了", Toast.LENGTH_SHORT).show();
+            stopProgress();
+            isEndofSpeech = true;
+            stopSpeeching();
         }
 
         public void onResult(RecognizerResult var1, boolean var2) {

@@ -77,6 +77,7 @@ public class VoiceSpeechManager {
         // 显示听写对话框
         mIatDialog.setResultListener(mRecognizerDialogListener);
         mIatDialog.setInputTextView(mResultText);
+        mIatDialog.setHashMap(mIatResults);
         mIatDialog.show();
 //        mContext.showToastMessage(mContext.getString(R.string.text_begin));
     }
@@ -127,7 +128,6 @@ public class VoiceSpeechManager {
     private RecognizerResultDialogListener mRecognizerDialogListener = new RecognizerResultDialogListener() {
         @Override
         public void onEndOfSpeech() {
-            mIatResults.clear();
             Log.e("VoiceBottomDialog", "已经被清掉了");
         }
 
