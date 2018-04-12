@@ -15,6 +15,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -177,6 +178,7 @@ public class VoiceBottomDialog extends Dialog {
         tv_voice_empty.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                hiddenKeyborder();
                 et_voice_content.setText("");
                 et_voice_content.setVisibility(View.INVISIBLE);
                 tv_voice_empty.setVisibility(View.INVISIBLE);
@@ -216,7 +218,7 @@ public class VoiceBottomDialog extends Dialog {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if(hasFocus) {
-                    
+
                 }
             }
         });
@@ -374,6 +376,15 @@ public class VoiceBottomDialog extends Dialog {
     private int dip2px(Context context,float dipValue){
         final float scale=context.getResources().getDisplayMetrics().density;
         return (int)(dipValue*scale+0.5f);
+    }
+
+    private void hiddenKeyborder(){
+        InputMethodManager imm = (InputMethodManager)mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm!=null&&getWindow().getAttributes().softInputMode != WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN) {
+            if (getCurrentFocus() != null){
+                imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+            }
+        }
     }
 
 }

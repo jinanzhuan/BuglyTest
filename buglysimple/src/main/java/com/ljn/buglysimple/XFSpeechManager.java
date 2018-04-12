@@ -71,6 +71,7 @@ public class XFSpeechManager {
         // 初始化听写Dialog，如果只使用有UI听写功能，无需创建SpeechRecognizer
         // 使用UI听写功能，请根据sdk文件目录下的notice.txt,放置布局文件和图片资源
         mIatDialog = new VoiceBottomDialog(mContext, R.style.MyBottomDialog, mInitListener);
+        mIatDialog.setCanceledOnTouchOutside(false);
         // 设置参数
         setParam();
         // 显示听写对话框
@@ -187,5 +188,16 @@ public class XFSpeechManager {
 
     private boolean requirePermission(int requestCode){
         return PermissionUtils.hasPermission(mContext, requestCode, Manifest.permission.RECORD_AUDIO);
+    }
+
+    /**
+     * 退出时释放连接
+     */
+    public void onDestroy(){
+        if( null != mIat ){
+            // 退出时释放连接
+            mIat.cancel();
+            mIat.destroy();
+        }
     }
 }
