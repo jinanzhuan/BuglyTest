@@ -163,17 +163,17 @@ public class VoiceBottomDialog extends Dialog {
                         stopSpeeching();
                         break;
                 }
-                return false;
+                return true;
             }
         });
 
-        rl_voice.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                tv_hint.setVisibility(View.INVISIBLE);
-                return false;
-            }
-        });
+//        rl_voice.setOnLongClickListener(new View.OnLongClickListener() {
+//            @Override
+//            public boolean onLongClick(View v) {
+//                tv_hint.setVisibility(View.INVISIBLE);
+//                return false;
+//            }
+//        });
 
         tv_voice_empty.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -214,14 +214,6 @@ public class VoiceBottomDialog extends Dialog {
             }
         });
         
-        et_voice_content.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus) {
-
-                }
-            }
-        });
     }
 
     private void stopSpeeching() {
