@@ -1,1 +1,1 @@
-include ':app', ':buglysimple'
+include ':app', ':buglysimple', ':calendarview'

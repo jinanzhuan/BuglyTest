@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/BuglyTest.iml" filepath="$PROJECT_DIR$/BuglyTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/buglysimple/buglysimple.iml" filepath="$PROJECT_DIR$/buglysimple/buglysimple.iml" />
+      <module fileurl="file://$PROJECT_DIR$/calendarview/calendarview.iml" filepath="$PROJECT_DIR$/calendarview/calendarview.iml" />
     </modules>
   </component>
 </project>

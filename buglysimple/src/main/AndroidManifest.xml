@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.ljn.buglysimple">
 
-    <!--Bugly升级SDK权限配置开始-->
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/> <!-- <uses-permission android:name="android.permission.GET_TASKS" /> -->
     <!--连接网络权限，用于执行云端语音能力 -->
@@ -25,7 +24,6 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <!--配置权限，用来记录应用配置信息 -->
     <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
-    <!--Bugly升级SDK权限配置结束-->
 
     <application
         android:allowBackup="true"
@@ -43,6 +41,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ProgressActivity"/>
+        <activity android:name=".CalendarActivity"/>
     </application>
 
 </manifest>

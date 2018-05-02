@@ -14,6 +14,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button btn_button;
     private Button btn_button2;
     private Button btn_progress;
+    private Button btn_canlendar;
     private ScaleAnimation animation;
 
     @Override
@@ -31,12 +32,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btn_button = (Button)findViewById(R.id.btn_button);
         btn_button2 = (Button)findViewById(R.id.btn_button2);
         btn_progress = (Button)findViewById(R.id.btn_progress);
+        btn_canlendar = (Button)findViewById(R.id.btn_canlendar);
     }
 
     private void initListener() {
         btn_button.setOnClickListener(this);
         btn_button2.setOnClickListener(this);
         btn_progress.setOnClickListener(this);
+        btn_canlendar.setOnClickListener(this);
     }
 
     private void initData() {
@@ -55,6 +58,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.btn_progress:
                 ProgressActivity.actionStart(this);
+                break;
+            case R.id.btn_canlendar:
+                CalendarActivity.actionStart(this);
                 break;
         }
     }
