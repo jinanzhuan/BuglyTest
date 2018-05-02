@@ -4,10 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
-import android.widget.RelativeLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.haibin.calendarview.Calendar;
@@ -31,20 +32,14 @@ import java.util.List;
  * </pre>
  */
 
-public class CalendarActivity extends AppCompatActivity implements CalendarView.OnYearChangeListener, CalendarView.OnDateSelectedListener {
+public class CalendarActivity extends AppCompatActivity implements CalendarView.OnYearChangeListener, CalendarView.OnDateSelectedListener, View.OnClickListener, ViewPager.OnPageChangeListener {
     TextView mTextMonthDay;
-
     TextView mTextYear;
-
-    TextView mTextLunar;
-
-    TextView mTextCurrentDay;
-
     CalendarView mCalendarView;
-
-    RelativeLayout mRelativeTool;
-
     GroupRecyclerView mRecyclerView;
+    ImageView mBtnPast;
+    ImageView mBtnFuture;
+//    ViewPager vp_content;
     private int mYear;
     CalendarLayout mCalendarLayout;
 
@@ -65,10 +60,10 @@ public class CalendarActivity extends AppCompatActivity implements CalendarView.
     private void initView() {
         mTextMonthDay = (TextView) findViewById(R.id.tv_month_day);
         mTextYear = (TextView) findViewById(R.id.tv_year);
-        mTextLunar = (TextView) findViewById(R.id.tv_lunar);
-        mRelativeTool = (RelativeLayout) findViewById(R.id.rl_tool);
+        mBtnPast = (ImageView) findViewById(R.id.btn_past);
+        mBtnFuture = (ImageView) findViewById(R.id.btn_future);
         mCalendarView = (CalendarView) findViewById(R.id.calendarView);
-        mTextCurrentDay = (TextView) findViewById(R.id.tv_current_day);
+//        vp_content = (ViewPager)findViewById(R.id.vp_content);
         mTextMonthDay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -77,26 +72,16 @@ public class CalendarActivity extends AppCompatActivity implements CalendarView.
                     return;
                 }
                 mCalendarView.showYearSelectLayout(mYear);
-                mTextLunar.setVisibility(View.GONE);
                 mTextYear.setVisibility(View.GONE);
                 mTextMonthDay.setText(String.valueOf(mYear));
             }
         });
-        findViewById(R.id.fl_current).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mCalendarView.scrollToCurrent();
-            }
-        });
 
         mCalendarLayout = (CalendarLayout) findViewById(R.id.calendarLayout);
-        mCalendarView.setOnYearChangeListener(this);
-        mCalendarView.setOnDateSelectedListener(this);
+
         mTextYear.setText(String.valueOf(mCalendarView.getCurYear()));
         mYear = mCalendarView.getCurYear();
         mTextMonthDay.setText(mCalendarView.getCurMonth() + "月" + mCalendarView.getCurDay() + "日");
-        mTextLunar.setText("今日");
-        mTextCurrentDay.setText(String.valueOf(mCalendarView.getCurDay()));
         mRecyclerView = (GroupRecyclerView) findViewById(R.id.recyclerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.addItemDecoration(new GroupItemDecoration<String,Article>());
@@ -105,7 +90,11 @@ public class CalendarActivity extends AppCompatActivity implements CalendarView.
     }
 
     private void initListener() {
-
+        mCalendarView.setOnYearChangeListener(this);
+        mCalendarView.setOnDateSelectedListener(this);
+        mBtnPast.setOnClickListener(this);
+        mBtnFuture.setOnClickListener(this);
+//        vp_content.addOnPageChangeListener(this);
     }
 
     private void initData() {
@@ -131,11 +120,9 @@ public class CalendarActivity extends AppCompatActivity implements CalendarView.
 
     @Override
     public void onDateSelected(Calendar calendar, boolean isClick) {
-        mTextLunar.setVisibility(View.VISIBLE);
         mTextYear.setVisibility(View.VISIBLE);
         mTextMonthDay.setText(calendar.getMonth() + "月" + calendar.getDay() + "日");
         mTextYear.setText(String.valueOf(calendar.getYear()));
-        mTextLunar.setText(calendar.getLunar());
         mYear = calendar.getYear();
     }
 
@@ -148,5 +135,39 @@ public class CalendarActivity extends AppCompatActivity implements CalendarView.
         calendar.setSchemeColor(color);//如果单独标记颜色、则会使用这个颜色
         calendar.setScheme(text);
         return calendar;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btn_past :
+                mCalendarView.scrollToPre();
+                break;
+            case R.id.btn_future :
+                mCalendarView.scrollToNext();
+                break;
+        }
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        int day = mCalendarView.getSelectedCalendar().getDay();
+        int month = mCalendarView.getSelectedCalendar().getMonth();
+        int year = mCalendarView.getSelectedCalendar().getYear();
+        if(positionOffsetPixels >= 0) {
+            mCalendarView.scrollToCalendar(year, month, day+1);
+        }else {
+            mCalendarView.scrollToCalendar(year, month, day+1);
+        }
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+
     }
 }
