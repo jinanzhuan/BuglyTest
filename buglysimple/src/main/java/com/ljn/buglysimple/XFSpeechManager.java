@@ -79,7 +79,6 @@ public class XFSpeechManager {
         mIatDialog.setInputTextView(mResultText);
         mIatDialog.setHashMap(mIatResults);
         mIatDialog.show();
-//        mContext.showToastMessage(mContext.getString(R.string.text_begin));
     }
 
     private void setParam() {

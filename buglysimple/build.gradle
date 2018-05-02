@@ -19,7 +19,7 @@ android {
         multiDexEnabled true
 
         buildConfigField("String", "BUGLY_ID", '"b104603c01"')
-        buildConfigField("String", "XF_APPID", '"5a0a4b2d"')
+        buildConfigField("String", "XF_APPID", '"11111111"')//换成自己SDK的APPID
     }
     // 签名配置
     signingConfigs {
