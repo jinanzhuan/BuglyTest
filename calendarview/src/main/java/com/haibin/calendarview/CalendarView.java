@@ -28,7 +28,10 @@ import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
 
+import com.haibin.calendarview.utils.DateUtil;
+
 import java.lang.reflect.Constructor;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
@@ -488,6 +491,62 @@ public class CalendarView extends FrameLayout {
         mMonthPager.setCurrentItem(12 * (year - mDelegate.getMinYear()) +
                 mDelegate.getCurrentDay().getMonth() - mDelegate.getMinYearMonth(), smoothScroll);
         mSelectLayout.scrollToYear(year, smoothScroll);
+    }
+
+
+    /**
+     * 获取月份开始的日期
+     * @return
+     */
+    public String getStartDate(int mYear, int mMonth){
+        int startDiff = CalendarUtil.getMonthViewStartDiff(mYear, mMonth, mDelegate.getWeekStart());
+        GregorianCalendar gc=new GregorianCalendar();
+        gc.set(mYear, mMonth-1, 1, 0, 0, 0);
+        gc.add(java.util.Calendar.DAY_OF_MONTH, -startDiff);
+        return DateUtil.dateToStrLong(gc.getTime());
+    }
+
+    /**
+     * 获取月份结束的日期
+     * @return
+     */
+    public String getEndDate(int mYear, int mMonth){
+        int endDiff = CalendarUtil.getMonthEndDiff(mYear, mMonth, mDelegate.getWeekStart());
+        int monthDaysCount = CalendarUtil.getMonthDaysCount(mYear, mMonth);
+        GregorianCalendar gc=new GregorianCalendar();
+        gc.set(mYear, mMonth-1, monthDaysCount, 23, 59, 59);
+        gc.add(java.util.Calendar.DAY_OF_MONTH, endDiff);
+        return DateUtil.dateToStrLong(gc.getTime());
+    }
+
+    /**
+     * 获取当前月份的天数
+     * @param year
+     * @param month
+     * @return
+     */
+    public int getMonthCount(int year, int month){
+        return CalendarUtil.getMonthDaysCount(year, month);
+    }
+
+    /**
+     * 月份开始的偏移量
+     * @param year
+     * @param month
+     * @return
+     */
+    public int getMonthStartDiff(int year, int month){
+        return CalendarUtil.getMonthViewStartDiff(year, month, mDelegate.getWeekStart());
+    }
+
+    /**
+     * 月份结束的偏移量
+     * @param year
+     * @param month
+     * @return
+     */
+    public int getMonthEndDiff(int year, int month){
+        return CalendarUtil.getMonthEndDiff(year, month, mDelegate.getWeekStart());
     }
 
 

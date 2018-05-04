@@ -53,8 +53,16 @@
         android:id="@+id/btn_canlendar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/btn_button2"
+        android:layout_below="@+id/btn_progress"
         android:layout_centerHorizontal="true"
         android:text="日历"/>
+
+    <Button
+        android:id="@+id/btn_viewpager"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btn_canlendar"
+        android:layout_centerHorizontal="true"
+        android:text="viewpager"/>
 
 </RelativeLayout>

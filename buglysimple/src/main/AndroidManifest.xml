@@ -42,6 +42,7 @@
         </activity>
         <activity android:name=".ProgressActivity"/>
         <activity android:name=".CalendarActivity"/>
+        <activity android:name=".ViewPagerActivity"/>
     </application>
 
 </manifest>
