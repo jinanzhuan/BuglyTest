@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -52,7 +51,7 @@ import static com.ljn.buglysimple.R.id.vp_content;
  * </pre>
  */
 
-public class CalendarActivity extends AppCompatActivity implements CalendarView.OnYearChangeListener, CalendarView.OnDateSelectedListener, View.OnClickListener, ViewPager.OnPageChangeListener, CalendarView.OnMonthChangeListener {
+public class CalendarActivity extends AppCompatActivity implements CalendarView.OnYearChangeListener, CalendarView.OnDateSelectedListener, View.OnClickListener, CalendarView.OnMonthChangeListener, DirectionViewPager.ChangeViewCallback {
     //    GroupRecyclerView mRecyclerView;
     @InjectView(R.id.btn_past)
     ImageView mBtnPast;
@@ -76,8 +75,7 @@ public class CalendarActivity extends AppCompatActivity implements CalendarView.
     private int mMonthCount;//月份天数
     private int mMonthStartDiff;//月份start偏移量
     private int mMonthEndDiff;//月份end偏移量
-    private boolean isScroll;
-    private boolean mIsCalendarClick;
+    private Calendar calendar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -132,7 +130,7 @@ public class CalendarActivity extends AppCompatActivity implements CalendarView.
         mCalendarView.setOnMonthChangeListener(this);
         mBtnPast.setOnClickListener(this);
         mBtnFuture.setOnClickListener(this);
-        mVpContent.addOnPageChangeListener(this);
+        mVpContent.setChangeViewCallback(this);
     }
 
     private void initData() {
@@ -160,19 +158,16 @@ public class CalendarActivity extends AppCompatActivity implements CalendarView.
 
     @Override
     public void onDateSelected(Calendar calendar, boolean isClick) {
+        this.calendar = calendar;
         mTextYear.setVisibility(View.VISIBLE);
         mTextMonthDay.setText(calendar.getMonth() + "月" + calendar.getDay() + "日");
         mTextYear.setText(String.valueOf(calendar.getYear()));
         mYear = calendar.getYear();
-        mIsCalendarClick = isClick;
         //移动viewpager均在此进行处理
-        if(isClick) {
+//        if(isClick) {
             int position = calendar.getDay()-1 + mMonthStartDiff;
-            isScroll = false;
             mVpContent.setCurrentItem(position);//定位viewpager到相关日历下
-            mPrePosition = position;
-            mIsCalendarClick = false;
-        }
+//        }
         Log.e("TAG", "calendar.getDay()="+calendar.getDay());
         Log.e("TAG", "mMonthStartDiff="+mMonthStartDiff);
         Log.e("TAG", "mPrePosition 11="+mPrePosition);
@@ -199,50 +194,6 @@ public class CalendarActivity extends AppCompatActivity implements CalendarView.
                 mCalendarView.scrollToNext();
                 break;
         }
-    }
-
-    @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-    }
-
-    @Override
-    public void onPageSelected(int position) {
-        Log.e("TAG", "isScroll ="+isScroll);
-
-        if(isScroll && !mIsCalendarClick) {
-            Log.e("TAG", "mPrePosition 22="+mPrePosition);
-            Log.e("TAG", "position 22="+position);
-            int day = mCalendarView.getSelectedCalendar().getDay();
-            int month = mCalendarView.getSelectedCalendar().getMonth();
-            int year = mCalendarView.getSelectedCalendar().getYear();
-            //滑动到下一个月
-            if(position - mMonthStartDiff > mMonthCount) {
-                Log.e("TAG", "滑动到下一个月");
-                mCalendarView.scrollToNext();
-                return;
-            }
-            //滑动到上一个月
-            if(position < mMonthStartDiff) {
-                Log.e("TAG", "滑动到上一个月");
-                mCalendarView.scrollToPre();
-                return;
-            }
-            if (position > mPrePosition) {
-                mCalendarView.scrollToCalendar(year, month, day + 1);
-            } else {
-                mCalendarView.scrollToCalendar(year, month, day - 1);
-            }
-            mPrePosition = position;
-        }else {
-            isScroll = true;
-        }
-
-    }
-
-    @Override
-    public void onPageScrollStateChanged(int state) {
-
     }
 
     @Override
@@ -274,12 +225,38 @@ public class CalendarActivity extends AppCompatActivity implements CalendarView.
         EcgSingleMonthWrapperModel wrapperModel = EcgHistoryDataWrapper.transformData(body, mMonthCount + mMonthStartDiff + mMonthEndDiff);
         CalendarContentAdapter adapter = new CalendarContentAdapter(wrapperModel.ecgData, patientHuid);
         mVpContent.setAdapter(adapter);
-        if(isFirst) {
-            int position = mCalendarView.getCurDay() - 1 + mMonthStartDiff;
-            isScroll = false;
+        if(calendar != null) {
+            int position = calendar.getDay() - 1 + mMonthStartDiff;
             mVpContent.setCurrentItem(position);//定位viewpager到相关日历下
-            mPrePosition = position;
-            Log.e("TAG", "isFisrt mPrePosition="+mPrePosition);
         }
+    }
+
+    @Override
+    public void changeView(boolean left, boolean right) {
+        int day = mCalendarView.getSelectedCalendar().getDay();
+        int month = mCalendarView.getSelectedCalendar().getMonth();
+        int year = mCalendarView.getSelectedCalendar().getYear();
+        if(left) {
+            if(day >= mMonthCount) {
+                Log.e("TAG", "滑动到下一个月");
+                mCalendarView.scrollToNext();
+            }else {
+                mCalendarView.scrollToCalendar(year, month, day + 1);
+            }
+        }
+        if(right) {
+            //滑动到上一个月
+            if(day <= 1) {
+                Log.e("TAG", "滑动到上一个月");
+                mCalendarView.scrollToPre();
+            }else {
+                mCalendarView.scrollToCalendar(year, month, day - 1);
+            }
+        }
+    }
+
+    @Override
+    public void getCurrentPageIndex(int position) {
+        Log.e("TAG", "postion="+position);
     }
 }

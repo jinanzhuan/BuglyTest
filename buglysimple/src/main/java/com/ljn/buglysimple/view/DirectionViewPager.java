@@ -17,6 +17,7 @@ public class DirectionViewPager extends ViewPager {
     private boolean isScrolling = false;
     private int lastValue = -1;
     private ChangeViewCallback changeViewCallback = null;
+    private int position;
 
     public DirectionViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -57,6 +58,21 @@ public class DirectionViewPager extends ViewPager {
                 right = left = false;
             }
 
+//            if(arg0 == 0) {
+//                if(changeViewCallback!=null){
+//                    if(position == 0) {
+//                        left = false;
+//                        right = true;
+//                    }
+//                    if(position == getAdapter().getCount()) {
+//                        right = false;
+//                        left = true;
+//                    }
+//                    changeViewCallback.changeView(true, false);
+//                    right = left = false;
+//                }
+//            }
+
         }
 
         @Override
@@ -79,6 +95,7 @@ public class DirectionViewPager extends ViewPager {
 
         @Override
         public void onPageSelected(int arg0) {
+            position = arg0;
             if(changeViewCallback!=null){
                 changeViewCallback.getCurrentPageIndex(arg0);
             }
