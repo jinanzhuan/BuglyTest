@@ -44,34 +44,24 @@ public class DirectionViewPager extends ViewPager {
         public void onPageScrollStateChanged(int arg0) {
             if (arg0 == 1) {
                 isScrolling = true;
-            } else {
-                isScrolling = false;
             }
 
-
-            if (arg0 == 2) {
-
+            //增加getCurrentItem != position的判断是为了防止页面没有滑动到下一个页面就执行逻辑
+            if (arg0 == 2 && isScrolling && getCurrentItem() != position) {
+                isScrolling = false;
                 //notify ....
                 if(changeViewCallback!=null){
                     changeViewCallback.changeView(left, right);
                 }
                 right = left = false;
             }
-
-//            if(arg0 == 0) {
-//                if(changeViewCallback!=null){
-//                    if(position == 0) {
-//                        left = false;
-//                        right = true;
-//                    }
-//                    if(position == getAdapter().getCount()) {
-//                        right = false;
-//                        left = true;
-//                    }
-//                    changeViewCallback.changeView(true, false);
-//                    right = left = false;
-//                }
-//            }
+            if(arg0 == 0 && isScrolling && (getCurrentItem() == 0 || getCurrentItem() == getAdapter().getCount()-1)) {
+                isScrolling = false;
+                if(changeViewCallback!=null){
+                    changeViewCallback.changeView(left, right);
+                }
+                right = left = false;
+            }
 
         }
 
@@ -83,6 +73,13 @@ public class DirectionViewPager extends ViewPager {
                     right = true;
                     left = false;
                 } else if (lastValue < arg2) {
+                    // 递减，向右侧滑动
+                    right = false;
+                    left = true;
+                } else if(getCurrentItem() == 0) {
+                    right = true;
+                    left = false;
+                } else if(getCurrentItem() == getAdapter().getCount()-1) {
                     // 递减，向右侧滑动
                     right = false;
                     left = true;
@@ -145,4 +142,5 @@ public class DirectionViewPager extends ViewPager {
     public boolean dispatchTouchEvent(MotionEvent ev) {
         return super.dispatchTouchEvent(ev);
     }
+
 }

@@ -15,6 +15,7 @@
             android:layout_width="14dp"
             android:layout_height="14dp"
             android:layout_marginTop="6dp"
+            android:src="@drawable/circle"
             android:layout_marginLeft="17dp"/>
 
     </LinearLayout>
@@ -27,6 +28,7 @@
         android:layout_gravity="center_vertical"
         android:layout_marginBottom="10dp"
         android:layout_marginLeft="6dp"
+        android:background="@drawable/rounded_et_ecg"
         android:layout_toRightOf="@id/iv_ecg_historyheader">
 
         <ImageView
@@ -36,6 +38,8 @@
             android:layout_marginLeft="13dp"
             android:layout_marginTop="17dp"
             android:background="#ffffff"/>
+
+        <include layout="@layout/layout_ecg_bpm"/>
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -52,7 +56,7 @@
                 android:layout_width="50dp"
                 android:layout_height="70dp"
                 android:layout_centerHorizontal="true"
-
+                android:src="@drawable/ic_icon_ecg_report"
                 />
 
             <TextView
@@ -80,7 +84,8 @@
         android:layout_marginTop="7dp"
         android:layout_alignTop="@+id/rl_ecg_item_container"
         android:layout_toRightOf="@+id/iv_ecg_historyheader"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:background="@drawable/bg_ll_label_unknow">
 
         <TextView
             android:id="@+id/tv_item_identity"
@@ -90,7 +95,8 @@
             android:ems="1"
             android:textSize="12sp"
             android:gravity="center"
-            tools:text="医生"/>
+            tools:text="医生"
+            android:background="@drawable/bg_tv_identity_auto"/>
 
         <TextView
             android:id="@+id/tv_item_ecghistory_state"

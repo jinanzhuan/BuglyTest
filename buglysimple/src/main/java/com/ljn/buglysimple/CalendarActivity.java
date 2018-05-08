@@ -22,7 +22,6 @@ import com.ljn.buglysimple.calendar.EcgHistoryDataWrapper;
 import com.ljn.buglysimple.calendar.EcgSingleMonthWrapperModel;
 import com.ljn.buglysimple.view.DirectionViewPager;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -68,9 +67,8 @@ public class CalendarActivity extends AppCompatActivity implements CalendarView.
     @InjectView(R.id.calendarLayout)
     CalendarLayout mCalendarLayout;
     private int mYear;
-    private int mPrePosition;
     private IApiService mIApiService;
-    String token = "bearer Y5DUvWYYGYmFqyxVmPA8zqTW9XDhYx";
+    String token = "bearer QHCXoxrNQ1uawL1JT0CSlYFU8W29hQ";
     String patientHuid = "5P3HZV";
     private int mMonthCount;//月份天数
     private int mMonthStartDiff;//月份start偏移量
@@ -134,20 +132,9 @@ public class CalendarActivity extends AppCompatActivity implements CalendarView.
     }
 
     private void initData() {
-        List<Calendar> schemes = new ArrayList<>();
         int year = mCalendarView.getCurYear();
         int month = mCalendarView.getCurMonth();
-
-        schemes.add(getSchemeCalendar(year, month, 3, 0, "假"));
-        schemes.add(getSchemeCalendar(year, month, 6, 0, "事"));
-        schemes.add(getSchemeCalendar(year, month, 9, 0, "议"));
-        schemes.add(getSchemeCalendar(year, month, 13, 0, "记"));
-        schemes.add(getSchemeCalendar(year, month, 14, 0, "记"));
-        schemes.add(getSchemeCalendar(year, month, 15, 0, "假"));
-        schemes.add(getSchemeCalendar(year, month, 18, 0, "记"));
-        schemes.add(getSchemeCalendar(year, month, 25, 0, "假"));
-        mCalendarView.setSchemeDate(schemes);
-        getDataFormServer(year, month, true);
+        getDataFormServer(year, month);
 
     }
 
@@ -164,13 +151,8 @@ public class CalendarActivity extends AppCompatActivity implements CalendarView.
         mTextYear.setText(String.valueOf(calendar.getYear()));
         mYear = calendar.getYear();
         //移动viewpager均在此进行处理
-//        if(isClick) {
-            int position = calendar.getDay()-1 + mMonthStartDiff;
-            mVpContent.setCurrentItem(position);//定位viewpager到相关日历下
-//        }
-        Log.e("TAG", "calendar.getDay()="+calendar.getDay());
-        Log.e("TAG", "mMonthStartDiff="+mMonthStartDiff);
-        Log.e("TAG", "mPrePosition 11="+mPrePosition);
+        int position = calendar.getDay()-1 + mMonthStartDiff;
+        mVpContent.setCurrentItem(position, false);//定位viewpager到相关日历下
     }
 
     @SuppressWarnings("all")
@@ -198,10 +180,10 @@ public class CalendarActivity extends AppCompatActivity implements CalendarView.
 
     @Override
     public void onMonthChange(int year, int month) {
-        getDataFormServer(year, month, false);
+        getDataFormServer(year, month);
     }
 
-    private void getDataFormServer(int year, int month, final boolean isFirst) {
+    private void getDataFormServer(final int year, final int month) {
         String startDate = mCalendarView.getStartDate(year, month);
         String endDate = mCalendarView.getEndDate(year, month);
         mMonthCount = mCalendarView.getMonthCount(year, month);
@@ -214,20 +196,20 @@ public class CalendarActivity extends AppCompatActivity implements CalendarView.
                     @Override
                     public void onNext(Response<List<RealmPatientEcgObject>> listResponse) {
                         if(listResponse.isSuccessful()) {
-                            sortMonthData(listResponse.body(), isFirst);
+                            sortMonthData(listResponse.body(), year, month);
                         }
                     }
 
                 });
     }
 
-    private void sortMonthData(List<RealmPatientEcgObject> body, boolean isFirst) {
-        EcgSingleMonthWrapperModel wrapperModel = EcgHistoryDataWrapper.transformData(body, mMonthCount + mMonthStartDiff + mMonthEndDiff);
+    private void sortMonthData(List<RealmPatientEcgObject> body, int year, int month) {
+        EcgSingleMonthWrapperModel wrapperModel = EcgHistoryDataWrapper.transformData(body, year, month, mCalendarView);
         CalendarContentAdapter adapter = new CalendarContentAdapter(wrapperModel.ecgData, patientHuid);
         mVpContent.setAdapter(adapter);
         if(calendar != null) {
             int position = calendar.getDay() - 1 + mMonthStartDiff;
-            mVpContent.setCurrentItem(position);//定位viewpager到相关日历下
+            mVpContent.setCurrentItem(position, false);//定位viewpager到相关日历下
         }
     }
 
