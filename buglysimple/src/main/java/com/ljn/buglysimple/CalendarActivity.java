@@ -68,7 +68,7 @@ public class CalendarActivity extends AppCompatActivity implements CalendarView.
     CalendarLayout mCalendarLayout;
     private int mYear;
     private IApiService mIApiService;
-    String token = "bearer QHCXoxrNQ1uawL1JT0CSlYFU8W29hQ";
+    String token = "bearer sexwe8ShNLAMRtaqLAVadqAxTh300n";
     String patientHuid = "5P3HZV";
     private int mMonthCount;//月份天数
     private int mMonthStartDiff;//月份start偏移量

@@ -13,11 +13,11 @@
         android:layout_marginLeft="23dp"
         android:layout_height="match_parent"/>
 
-    <ListView
+    <com.ljn.buglysimple.view.MyListView
         android:id="@+id/lv"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    </ListView>
+    </com.ljn.buglysimple.view.MyListView>
 
     <LinearLayout
         android:id="@+id/ll_no_ecg"

@@ -5,10 +5,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 
 import com.ljn.buglysimple.R;
 import com.ljn.buglysimple.bean.EcgSingleDayCalendarModel;
+import com.ljn.buglysimple.view.MyListView;
 
 import java.util.HashMap;
 
@@ -50,7 +50,7 @@ public class CalendarContentAdapter extends PagerAdapter {
     public Object instantiateItem(ViewGroup container, int position) {
         View view = LayoutInflater.from(container.getContext()).inflate(R.layout.item_pager, container, false);
 
-        ListView lv = (ListView) view.findViewById(R.id.lv);
+        MyListView lv = (MyListView) view.findViewById(R.id.lv);
         LinearLayout ll_no_ecg = (LinearLayout) view.findViewById(R.id.ll_no_ecg);
         View line = view.findViewById(R.id.blue_line);
 
