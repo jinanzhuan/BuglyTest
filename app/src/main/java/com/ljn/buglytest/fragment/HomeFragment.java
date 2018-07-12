@@ -71,6 +71,7 @@ public class HomeFragment extends BaseFragment {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(Color.TRANSPARENT);
         }
+        StatusBarCompat.compat(getActivity(), Color.parseColor("#336699"));
         vpHomeAdv.setAdapter(new VpHomeAdvAdapter());
         vpHomeAdv.setOffscreenPageLimit(5);
     }
@@ -79,13 +80,19 @@ public class HomeFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         isResume = true;
+        StatusBarCompat.compat(getActivity(), Color.TRANSPARENT);
     }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if(isResume && isVisibleToUser) {
-            StatusBarCompat.compat(getActivity(), Color.TRANSPARENT);
+        if(isResume) {
+            if(isVisibleToUser) {
+                StatusBarCompat.compat(getActivity(), Color.TRANSPARENT);
+            }else {
+                StatusBarCompat.compat(getActivity(), Color.parseColor("#336699"));
+            }
+
         }
     }
 
