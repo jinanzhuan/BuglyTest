@@ -51,6 +51,12 @@ android {
             signingConfig signingConfigs.debug
         }
     }
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
 }
 
 dependencies {
@@ -58,8 +64,13 @@ dependencies {
     // 多dex配置
     //其中latest.release指代最新版本号，也可以指定明确的版本号，例如2.2.0
     compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.android.support:design:25.3.1'
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.tencent.bugly:crashreport_upgrade:1.3.4'
     compile 'com.tencent.bugly:nativecrashreport:latest.release'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.jakewharton:butterknife:5.1.1'
+    compile files('libs/glide-3.6.1.jar')
+//    compile 'com.github.fodroid:XStatusBarHelper:v1.1'
+
 }
